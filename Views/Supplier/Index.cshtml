@@ -1,0 +1,83 @@
+﻿@using TugasAsinkron2.Models.DataContext
+@model List<SupplierViewModel>
+@{
+	ViewData["title"] = "Daftar Supplier";
+}
+
+@*Buat tabel sederhana*@
+<div class="">
+	<h1>Daftar Supplier</h1>
+
+	@*UI Untuk Search box*@
+	<div>
+		<div class="row">
+			<div class="col-md-3">
+				<label>Nama Supplier</label>
+				<input type="text" id="search-nama-supplier" class="form-control" />
+			</div>
+			<div class="col-md-3">
+				<label>Kota</label>
+				<input type="text" id="search-nama-kota" class="form-control" />
+			</div>
+		</div>
+		<div>
+			<button type="button" id="btn-search" class="btn btn-primary" style="margin-top:5px">SEARCH</button>
+			<a asp-action="CreateSupplier" class="btn btn-success" style="margin-top:5px">NEW SUPPLIER</a>
+		</div>
+	</div>
+
+	@*Partial View untuk tabel supplier*@
+	<div class="supplierTableView">
+		<partial name="~/Views/Supplier/_Partial/_Table.cshtml" model="Model" />
+	</div>
+
+</div>
+
+
+@section Scripts {
+	<script type="text/javascript">
+		$(document).on('click', '#btn-delete', function (e) {
+			var id = $(this).val();
+			var kota = $('#search-nama-kota').val();
+			var supplier = $('#search-nama-supplier').val();
+			$.ajax({
+				type: 'POST',
+				data: { id, kota, supplier },
+				url: '/Supplier/Delete', 
+				success: function (partialView) {
+					$('.supplierTableView').html(partialView);
+				}
+			});
+		});
+
+		$(document).on('click', '#btn-search', function () {
+			var kota = $('#search-nama-kota').val();
+			var supplier = $('#search-nama-supplier').val();
+			console.log(kota, supplier);
+			$.ajax({
+				type: 'POST',
+				data: { kota, supplier },
+				url: '/Supplier/Search',
+				success: function (partialView) {
+					$('.supplierTableView').html(partialView)
+				}
+			})
+		})
+
+		$(document).on('click', '#btn-pagination', function () {
+			var page = $(this).val();
+			var kota = $('#search-nama-kota').val();
+			var supplier = $('#search-nama-supplier').val();
+			$.ajax({
+				type: 'POST',
+				data: { kota, supplier, page },
+				url: '/Supplier/Search',
+				success: function (partialView) {
+					$('.supplierTableView').html(partialView)
+				}
+			})
+		})
+
+	</script>
+
+}

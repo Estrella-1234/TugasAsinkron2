@@ -1,0 +1,74 @@
+﻿@using TugasAsinkron2.Models.DataContext
+@model Product
+@{
+    ViewData["title"] = "New Product";
+}
+
+<form method="post">
+    <div class="row">
+        <div class="productPartialView">
+            <partial name="~/Views/Product/_Partial/_ProductForm.cshtml" model="Model" />
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-success" id="btn-add" style="margin-bottom:5px">+ TAMBAH</button>
+            <button type="button" class="btn btn-primary" id="btn-submit" style="margin-bottom:5px">CREATE PRODUCT</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script type="text/javascript">
+        //Fungsi btn-add
+        $(document).on('click', '#btn-add', function(e){
+            $.ajax({
+                url: '/Product/AddCreateView',
+                success: function(partialView){
+                    $('.productPartialView').append(partialView);
+                }
+            });
+        });
+
+        //Fungsi btn-delete 
+        //Untuk menghapus data yang tidak jadi disimpan
+        $(document).on('click', '#btn-delete', function(e){
+            $(this).parent().parent().remove();
+        });
+
+        //Method post / fungsi btn-submit
+        //Pertama-tama ambil semua data pada semua partial view yang dibuat
+        function getPartialViewData(){
+            var data = [];
+
+            const _namaProduct = document.querySelectorAll('#namaProduct');
+            const _idSupplier = document.querySelectorAll('#idSupplier');
+            const _unitPrice = document.querySelectorAll('#unitPrice');
+            const _package = document.querySelectorAll('#package');
+            const _isDiscontinued = document.querySelectorAll('#isDiscontinued');
+
+            for (var i = 0; i < _namaProduct.length; i++){
+                data.push({
+                    ProductName: _namaProduct[i].value,
+                    SupplierId: _idSupplier[i].value,
+                    UnitPrice: _unitPrice[i].value,
+                    Package: _package[i].value,
+                    IsDiscontinued: _isDiscontinued[i].value
+                });
+            }
+            return data;
+        }
+
+        $(document).on('click', '#btn-submit', function(e){
+            var products = getPartialViewData();
+            $.ajax({
+                type: 'POST',
+                data: { products },
+                url: '/Product/CreateProduct',
+                success: function(response){
+                    if (response.success){
+                        window.location.href = response.redirectToUri;
+                    }
+                }
+            });
+        });
+    </script>
+}

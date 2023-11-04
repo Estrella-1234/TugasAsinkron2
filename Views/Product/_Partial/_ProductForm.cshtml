@@ -1,0 +1,41 @@
+﻿@using TugasAsinkron2.Models.DataContext
+@{
+    List<Supplier> supplier = new List<Supplier>();
+    using (var db = new DataContext()){
+        supplier = db.Suppliers.ToList();
+    }
+}
+
+<div class="col-md-12">
+    <div class="form-group">
+        <h4>ADD NEW PRODUCT</h4>
+    </div>
+    <div class="form-group">
+        <label>Nama Product</label>
+        <input id="namaProduct" class="form-control" />
+    </div>
+    @*Untuk Supplier perlu membuat dropdown dari tabel Nama Supplier,
+    Tabel akan saya buat langsung pada halaman ini dengan EF Core
+    *@
+    <div class="form-group">
+        <label>Nama Supplier</label>
+        <select id="idSupplier" class="form-control">
+            @foreach (var s in supplier)
+            {
+                <option value="@s.Id">@s.CompanyName</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Unit Price</label>
+        <input type="number" id="unitPrice" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Package</label>
+        <input id="package" class="form-control" />
+    </div>
+    <input type="hidden" id="isDiscontinued" value="0" />
+    <div class="form-group">
+        <button type="button" class="btn btn-danger" style="margin-top:10px;margin-bottom:5px" id="btn-delete">HAPUS DATA</button>
+    </div>
+</div>

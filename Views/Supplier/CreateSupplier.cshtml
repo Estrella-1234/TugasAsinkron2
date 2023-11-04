@@ -1,0 +1,86 @@
+﻿@using TugasAsinkron2.Models.DataContext
+@model Supplier
+@{
+	ViewData["title"] = "New Supplier";
+}
+
+<form method="post">
+	<div class="row">
+		<div class="supplierPartialView">
+			<partial name="~/Views/Supplier/_Partial/_SupplierForm.cshtml" model="Model" />
+		</div>
+		<div class="form-group">
+			<button type="button" class="btn btn-success" id="btn-add" style="margin-bottom:5px">+ TAMBAH</button>
+			<button type="button" class="btn btn-primary" id="btn-submit" style="margin-bottom:5px">CREATE SUPPLIER</button>
+		</div>
+	</div>
+</form>
+
+@section Scripts {
+	<script type="text/javascript">
+		//Fungsi btn-add
+		$(document).on('click', '#btn-add', function (e) {
+			$.ajax({
+				url: '/Supplier/AddCreateView',
+				success: function (partialView) {
+					$('.supplierPartialView').append(partialView);
+				}
+			})
+				.fail(function (jqXHR, textStatus, errorThrown) {
+					console.log('AJAX Error: ' + textStatus, errorThrown);
+				});
+		});
+
+		//Fungsi btn-delete
+		//Untuk menghapus data yang tidak jadi disimpan
+		$(document).on('click', '#btn-delete', function (e) {
+			$(this).parent().parent().remove();
+		});
+
+		//Method post / fungsi btn-submit
+		//Pertama-tama ambil semua data pada semua partial view yang dibuat
+		function getPartialViewData() {
+			var data = [];
+
+			const _CompanyName = document.querySelectorAll('#CompanyName');
+			const _ContactName = document.querySelectorAll('#ContactName');
+			const _ContactTitle = document.querySelectorAll('#ContactTitle');
+			const _City = document.querySelectorAll('#City');
+			const _Country = document.querySelectorAll('#Country');
+			const _Phone = document.querySelectorAll('#Phone');
+			const _Fax = document.querySelectorAll('#Fax');
+
+			for (var i = 0; i < _CompanyName.length; i++) {
+				data.push({
+					CompanyName: _CompanyName[i].value,
+					ContactName: _ContactName[i].value,
+					ContactTitle: _ContactTitle[i].value,
+					City: _City[i].value,
+					Country: _Country[i].value,
+					Phone: _Phone[i].value,
+					Fax: _Fax[i].value
+				});
+			}
+			return data;
+		}
+
+		$(document).on('click', '#btn-submit', function (e) {
+			var suppliers = getPartialViewData();
+			$.ajax({
+				type: 'POST',
+				data: { suppliers },
+				url: '/Supplier/CreateSupplier',
+				success: function (response) {
+					if (response.success) {
+						window.location.href = response.redirectToUri;
+					}
+				}
+			})
+				.fail(function (jqXHR, textStatus, errorThrown) {
+					console.log('AJAX Error: ' + textStatus, errorThrown);
+				});
+		});
+
+	</script>
+
+}

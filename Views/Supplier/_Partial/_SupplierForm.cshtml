@@ -1,0 +1,45 @@
+﻿@using TugasAsinkron2.Models.DataContext
+@model Supplier
+@{
+	ViewData["title"] = "New Supplier";
+}
+<div class="mb-5">
+	<h1>New Supplier</h1>
+	<div class="mb-1">
+		<label for="CompanyName" class="form-label">Nama Perusahaan</label>
+		<input type="text" class="form-control" id="CompanyName" name="CompanyName" required>
+	</div>
+
+	<div class="mb-1">
+		<label for="ContactName" class="form-label">Nama Kontak</label>
+		<input type="text" class="form-control" id="ContactName" name="ContactName">
+	</div>
+
+	<div class="mb-1">
+		<label for="ContactTitle" class="form-label">Judul Kontak</label>
+		<input type="text" class="form-control" id="ContactTitle" name="ContactTitle">
+	</div>
+
+	<div class="mb-1">
+		<label for="City" class="form-label">Kota</label>
+		<input type="text" class="form-control" id="City" name="City">
+	</div>
+
+	<div class="mb-1">
+		<label for="Country" class="form-label">Negara</label>
+		<input type="text" class="form-control" id="Country" name="Country">
+	</div>
+
+	<div class="mb-1">
+		<label for="Phone" class="form-label">Nomor Telepon</label>
+		<input type="tel" class="form-control" id="Phone" name="Phone">
+	</div>
+
+	<div class="mb-1">
+		<label for="Fax" class="form-label">Nomor Fax</label>
+		<input type="tel" class="form-control" id="Fax" name="Fax">
+	</div>
+	<div class="form-group">
+		<button type="button" class="btn btn-danger" style="margin-top:10px;margin-bottom:5px" id="btn-delete">HAPUS DATA</button>
+	</div>
+</div>

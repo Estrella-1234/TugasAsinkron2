@@ -1,0 +1,112 @@
+﻿@using TugasAsinkron2.Models.DataContext
+@model List<ProductViewModel>
+@{
+    ViewData["title"] = "Daftar Product";
+    IFormFile excel = null;
+}
+
+@*Buat tabel sederhana*@
+<div class="table-responsive">
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" asp-for="@excel" class="form-control" />
+        <button type="submit" class="btn btn-success mt-1">UPLOAD EXCEL</button>
+    </form>
+    <form method="post" asp-action="Export" asp-controller="Excel">
+        <button type="submit" class="btn btn-primary" style="margin-top:5px">EXPORT TO EXCEL</button>
+    </form>
+    @*Buat sebuah tombol untuk masuk ke halaman create product tadi*@
+    <a asp-action="CreateProduct" class="btn btn-primary" style="margin-top:5px">NEW PRODUCT</a>
+
+
+    @*UI Untuk Search box*@
+    <div>
+        <div class="row">
+            <div class="col-md-3">
+                <label>Nama Product</label>
+                <input type="text" id="search-nama-product" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label>Nama Supplier</label>
+                <input type="text" id="search-nama-supplier" class="form-control" autocomplete="on" />
+            </div>
+        </div>
+        <div>
+            <button type="button" id="btn-search" class="btn btn-primary" style="margin-top:5px">SEARCH</button>
+        </div>
+    </div>
+
+    @*Partial View untuk tabel produk*@
+    <div class="productTableView">
+        <partial name="~/Views/Product/_Partial/_Table.cshtml" model="Model" />
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).on('click', '#btn-delete', function(e){
+            var id = $(this).val();
+            var product = $('#search-nama-product').val();
+            var supplier = $('#search-nama-supplier').val();
+            $.ajax({
+                //Body dari form post untuk menghapus data
+                type: 'POST',
+                data: {id, product, supplier},
+                url: '/Product/Delete',
+                //Hasil dari form tersebut
+                success: function(partialView){
+                    $('.productTableView').html(partialView);
+                }
+            })
+        })
+
+        //Selanjutnya kita buat fungsi SupplierAc pada controller Product
+        $(document).on('click', '#search-nama-supplier', function(){
+            $(this).autocomplete({
+                source: function(request, response){
+                    $.ajax({
+                        url: '/Product/SupplierAc',
+                        data: {"prefix" : request.term},
+                        type: 'POST',
+                        success: function(data){
+                            response($.map(data, function(item){
+                                return item;
+                            }))
+                        }
+                    })
+                },
+                select: function(e, i){},
+                minLength:2
+            }).focus(function(){
+                $(this).autocomplete("search");
+            })
+        })
+
+        $(document).on('click', '#btn-search', function(){
+            var product = $('#search-nama-product').val();
+            var supplier = $('#search-nama-supplier').val();
+            $.ajax({
+                type: 'POST',
+                data: { product, supplier },
+                url: '/Product/Search',
+                success: function(partialView){
+                    $('.productTableView').html(partialView)
+                }
+            })
+        })
+        //Kemudian tambahkan fungsi pada controller Product
+
+        $(document).on('click', '#btn-pagination', function(){
+            var page = $(this).val();
+            var product = $('#search-nama-product').val();
+            var supplier = $('#search-nama-supplier').val();
+            $.ajax({
+                type: 'POST',
+                data: { product, supplier, page },
+                url: '/Product/Search',
+                success: function (partialView) {
+                    $('.productTableView').html(partialView)
+                }
+            })
+        })
+    </script>
+}

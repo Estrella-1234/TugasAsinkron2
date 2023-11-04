@@ -1,0 +1,66 @@
+﻿@model List<SupplierViewModel>
+@{
+	int totalPage = ViewBag.TotalPage;
+	int currentPage = ViewBag.CurrentPage;
+}
+
+<table class="align-middle mb-0 table table-hover">
+	<thead>
+		<tr>
+			<th>No</th>
+			<th>Nama Supplier</th>
+			<th>Kota</th>
+			<th>Negara</th>
+			<th>Nomor Telepon</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		@*Iterasikan data kedalam tabel*@
+		@for (int i = 0; i < Model.Count; i++)
+		{
+			<tr>
+				<td>@(i + 1 + ((currentPage - 1) * 10))</td>
+				<td>@Model[i].CompanyName</td>
+				<td>@Model[i].City</td>
+				<td>@Model[i].Country</td>
+                <td>@Model[i].Phone</td>
+				<td><a class="btn btn-primary" asp-action="Update" asp-route-Id="@Model[i].Id">UPDATE</a> <button type="button" class="btn btn-danger" style="margin-left:5px" id="btn-delete" value="@Model[i].Id">DELETE</button></td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<div class="container pt-3 pb-5">
+    <div class="row">
+        <div class="col-sm-12">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justtify-content-center">
+                    <li class="page-item">
+                        <button class="page-link" title="Halaman pertama" id="btn-pagination" value="1">
+                            <span aria-hidden="true"><i class="fa fa-angle-double-left"></i></span>
+                            <span class="sr-only">Previous</span>
+                        </button>
+                    </li>
+                    @for (int i = 1; i <= totalPage; i++)
+                    {
+                        if (i == currentPage || i == currentPage + 1 || i == currentPage - 1 || i == currentPage + 2 || i == currentPage - 2 || i == currentPage + 3 || i == currentPage - 3)
+                        {
+                            <li class="page-item @(currentPage == i ? " active":"")">
+                                <button class="page-link" id="btn-pagination" value="@i">
+                                    @i
+                                </button>
+                            </li>
+                        }
+                    }
+                    <li class="page-item">
+                        <button class="page-link" title="Halaman terakhir" id="btn-pagination" value="@totalPage">
+                            <span aria-hidden="true"><i class="fa fa-angle-double-rigth"></i></span>
+                            <span class="sr-only">Last</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
